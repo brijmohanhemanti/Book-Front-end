@@ -1,35 +1,33 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import NavBar from "../Componenets/NavBar"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
 function EditPage (){
 const {id} = useParams()
-    const [book,setBook] = useState({
-      bookName: "",
-  bookAuthor: "",
-  bookPrice: ""
-    })
+const navigate =useNavigate()
+    const [book,setBook] = useState({})
     const fetchBook = async ()=>{
        const response = await axios.get("http://localhost:4500/api/books/" + id)
-       setBook(response.data.datas)// response.data.hello
+       setBook(response.data.datas)
     }
     useEffect(()=>{
         fetchBook()
     },[])
     const handleChange = (event)=>{
-        let {name,value} = event.target 
+        const {name,value} = event.target 
         setBook({
             ...book,
             [name] : value
         })
     }
-    console.log(book,"Book hooo")
+
     const editBook = async (event)=>{
         event.preventDefault()
         const response = await axios.patch("http://localhost:4500/api/books/" + id,book)
-        if(response.status == 200){
+        if(response.status === 200){
             alert("Edited successfully")
+            navigate("/")
         }else{
             alert("Something went wrong")
         }
